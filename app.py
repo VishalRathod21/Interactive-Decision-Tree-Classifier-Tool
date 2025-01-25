@@ -3,12 +3,9 @@ import streamlit as st
 import numpy as np
 from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
 from sklearn.datasets import make_moons
-from sklearn.tree import DecisionTreeClassifier, export_graphviz
+from sklearn.tree import DecisionTreeClassifier, plot_tree
 from sklearn.metrics import accuracy_score, confusion_matrix
-from sklearn.metrics import ConfusionMatrixDisplay
 import seaborn as sns
-import pydot
-from sklearn import tree
 
 st.title("Interactive Decision Tree Classifier Tool")
 st.subheader("Visualize and Evaluate Decision Tree Classifier Performance")
@@ -87,14 +84,10 @@ if st.sidebar.button('Run Algorithm'):
     orig = st.pyplot(fig)
     st.subheader("Accuracy for Decision Tree  " + str(round(accuracy_score(y_test, y_pred), 2)))
 
-    # Use pydot to render and save the tree as PNG
-    dot_data = export_graphviz(clf, out_file=None, feature_names=["Col1","Col2"], filled=True, rounded=True)
-    graph = pydot.graph_from_dot_data(dot_data)
-    graph[0].set_graph_defaults(fontname="Helvetica", fontsize=10)
-    graph[0].write_png("/tmp/decision_tree.png")
-
-    # Display the PNG image
-    st.image("/tmp/decision_tree.png")
+    # Plot the decision tree using sklearn's plot_tree
+    fig, ax = plt.subplots(figsize=(12, 8))  # Set the size of the figure
+    plot_tree(clf, filled=True, feature_names=["Col1", "Col2"], class_names=["Class 0", "Class 1"], ax=ax)
+    st.pyplot(fig)
 
     # Add divider line
     st.markdown("---")
