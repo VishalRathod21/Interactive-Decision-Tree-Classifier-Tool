@@ -6,6 +6,7 @@ from sklearn.datasets import make_moons
 from sklearn.tree import DecisionTreeClassifier, plot_tree
 from sklearn.metrics import accuracy_score, confusion_matrix
 import seaborn as sns
+import os
 
 st.title("Interactive Decision Tree Classifier Tool")
 st.subheader("Visualize and Evaluate Decision Tree Classifier Performance")
@@ -87,7 +88,20 @@ if st.sidebar.button('Run Algorithm'):
     # Plot the decision tree using sklearn's plot_tree
     fig, ax = plt.subplots(figsize=(12, 8))  # Set the size of the figure
     plot_tree(clf, filled=True, feature_names=["Col1", "Col2"], class_names=["Class 0", "Class 1"], ax=ax)
+    
+    # Save the decision tree plot as PNG
+    tree_image_path = '/tmp/decision_tree.png'
+    fig.savefig(tree_image_path)
     st.pyplot(fig)
+
+    # Provide the download button for the decision tree plot
+    with open(tree_image_path, "rb") as f:
+        st.download_button(
+            label="Download Decision Tree as PNG",
+            data=f,
+            file_name="decision_tree.png",
+            mime="image/png"
+        )
 
     # Add divider line
     st.markdown("---")
