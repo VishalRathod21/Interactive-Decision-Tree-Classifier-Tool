@@ -60,5 +60,6 @@ To run the app, use the following command in the terminal:
 ```bash
 streamlit run app.py
 ```
-Conclusion
+## Conclusion
+
 This tool is designed for users to explore and understand the inner workings of a Decision Tree Classifier, from training to evaluation and optimization. By adjusting hyperparameters and visualizing the model's performance, users can gain insights into how decision trees classify data and how model parameters affect the results.
