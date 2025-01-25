@@ -6,9 +6,9 @@ from sklearn.datasets import make_moons
 from sklearn.tree import DecisionTreeClassifier, export_graphviz
 from sklearn.metrics import accuracy_score, confusion_matrix
 from sklearn.metrics import ConfusionMatrixDisplay
-from sklearn import tree
 import seaborn as sns
-import graphviz
+import pydot
+from sklearn import tree
 
 st.title("Interactive Decision Tree Classifier Tool")
 st.subheader("Visualize and Evaluate Decision Tree Classifier Performance")
@@ -87,9 +87,14 @@ if st.sidebar.button('Run Algorithm'):
     orig = st.pyplot(fig)
     st.subheader("Accuracy for Decision Tree  " + str(round(accuracy_score(y_test, y_pred), 2)))
 
-    tree = export_graphviz(clf,feature_names=["Col1","Col2"])
+    # Use pydot to render and save the tree as PNG
+    dot_data = export_graphviz(clf, out_file=None, feature_names=["Col1","Col2"], filled=True, rounded=True)
+    graph = pydot.graph_from_dot_data(dot_data)
+    graph[0].set_graph_defaults(fontname="Helvetica", fontsize=10)
+    graph[0].write_png("/tmp/decision_tree.png")
 
-    st.graphviz_chart(tree)
+    # Display the PNG image
+    st.image("/tmp/decision_tree.png")
 
     # Add divider line
     st.markdown("---")
@@ -127,24 +132,6 @@ if st.sidebar.button('Run Algorithm'):
     st.write("Calculates the model's accuracy using cross-validation to assess its performance on unseen data.")
     cv_scores = cross_val_score(clf, X, y, cv=5)
     st.write(f"Mean Cross-Validation Accuracy: {cv_scores.mean():.2f}")
-
-    # Add divider line
-    st.markdown("---")
-
-    # Export Decision Tree as PNG and Download
-    st.subheader("Export Decision Tree as PNG")
-    st.write("Allows exporting the trained decision tree as a PNG file for documentation or reporting purposes.")
-    dot_data = export_graphviz(clf, out_file=None, feature_names=["Col1", "Col2"], filled=True, rounded=True)
-    graph = graphviz.Source(dot_data)
-    graph_path = "decision_tree"
-    graph.render(graph_path, format='png', cleanup=True)
-    with open(f"{graph_path}.png", "rb") as file:
-        btn = st.download_button(
-            label="Download Decision Tree as PNG",
-            data=file,
-            file_name="decision_tree.png",
-            mime="image/png"
-        )
 
     # Add divider line
     st.markdown("---")
